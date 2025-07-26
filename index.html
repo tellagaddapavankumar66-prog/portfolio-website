@@ -1,0 +1,141 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pavan Kumar Tellagadda - Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .smooth-scroll { scroll-behavior: smooth; }
+        .hover-scale { transition: transform 0.3s; }
+        .hover-scale:hover { transform: scale(1.05); }
+        .hero-bg { background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://source.unsplash.com/1600x900/?hyderabad'); background-size: cover; background-position: center; }
+        @media (max-width: 640px) {
+            .hero-bg h1 { font-size: 2rem; }
+            .hero-bg p { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body class="smooth-scroll bg-gray-100">
+    <!-- Hero Section -->
+    <section class="hero-bg text-white py-20 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold">Pavan Kumar Tellagadda</h1>
+        <p class="text-xl md:text-2xl mt-4">Python Developer | Video Editor | మా కోడ్, మా కథ!</p>
+        <a href="#contact" class="mt-6 inline-block bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 hover-scale">Contact Me</a>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 px-4 md:px-20 bg-white">
+        <h2 class="text-3xl font-bold text-center text-gray-800">About Me</h2>
+        <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+            I'm Pavan Kumar Tellagadda, a passionate Python developer and video editor from Narasaraopet. I completed my B.Sc in Computer Science at Vagdevi Degree College (2022-2025) and have hands-on experience in Cyber Security through an internship. I create engaging content for my YouTube channel (@ismart_channel) and love building innovative projects that blend code and creativity. My goal is to solve real-world problems and inspire others through tech and storytelling!
+        </p>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-16 px-4 md:px-20 bg-gray-200">
+        <h2 class="text-3xl font-bold text-center text-gray-800">Skills</h2>
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <div class="bg-white p-6 rounded-lg shadow hover-scale">
+                <h3 class="text-xl font-semibold">Technical Skills</h3>
+                <p class="mt-2 text-gray-600">Python, HTML, CSS, JavaScript, Video Editing (Filmora, Premiere Pro), Cyber Security</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover-scale">
+                <h3 class="text-xl font-semibold">Soft Skills</h3>
+                <p class="mt-2 text-gray-600">Self-Motivated, Quick Learner, Positive Thinking</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover-scale">
+                <h3 class="text-xl font-semibold">Languages</h3>
+                <p class="mt-2 text-gray-600">Telugu, English</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-16 px-4 md:px-20 bg-white">
+        <h2 class="text-3xl font-bold text-center text-gray-800">Projects</h2>
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="bg-gray-100 p-6 rounded-lg shadow hover-scale">
+                <h3 class="text-xl font-semibold">Stock Market Dashboard</h3>
+                <p class="mt-2 text-gray-600">A real-time dashboard built with Python (yfinance) and Dash to visualize stock prices and predict trends using ML.</p>
+                <a href="https://github.com/tellagaddapavankumar/stock-dashboard" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">View on GitHub</a>
+            </div>
+            <div class="bg-gray-100 p-6 rounded-lg shadow hover-scale">
+                <h3 class="text-xl font-semibold">iSmart Channel Vlogs</h3>
+                <p class="mt-2 text-gray-600">Created engaging YouTube content about Hyderabad culture, tech, and mini-vlogs with creative video editing.</p>
+                <a href="https://youtube.com/@ismart_channel" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">Watch Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resume Section -->
+    <section id="resume" class="py-16 px-4 md:px-20 bg-gray-200 text-center">
+        <h2 class="text-3xl font-bold text-gray-800">Resume</h2>
+        <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Download my resume to learn more about my education, experience, and skills.</p>
+        <a href="path/to/your-resume.pdf" class="mt-6 inline-block bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 hover-scale">Download Resume</a>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 px-4 md:px-20 bg-white">
+        <h2 class="text-3xl font-bold text-center text-gray-800">Contact Me</h2>
+        <div class="mt-8 max-w-xl mx-auto">
+            <p class="text-lg text-gray-600">Reach out for collaborations, tech projects, or video editing opportunities! Click the links below or copy-paste if they don’t open directly.</p>
+            <div class="mt-4 flex flex-col items-center space-y-2">
+                <p class="text-gray-600">Phone: +91 6300622819</p>
+                <p class="text-gray-600">Email: tellagaddapavankumar66@gmail.com</p>
+                <div class="flex space-x-4">
+                    <a href="https://www.linkedin.com/in/tellagadda-pavan-kumar-293443313" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">LinkedIn</a>
+                    <a href="https://youtube.com/@ismart_channel" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">YouTube</a>
+                    <a href="https://github.com/tellagaddapavankumar" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-4">
+        <p>&copy; 2025 Pavan Kumar Tellagadda. All rights reserved.</p>
+    </footer>
+</body>
+</html>
